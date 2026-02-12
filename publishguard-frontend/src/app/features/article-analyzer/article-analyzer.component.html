@@ -1,0 +1,33 @@
+<section class="container">
+  <header class="header">
+    <h1>SEO PublicGuard</h1>
+    <p>Analyze a Google Docs article for SEO readiness.</p>
+  </header>
+
+  <form class="card" [formGroup]="form" (ngSubmit)="analyze()">
+    <label for="sourceUrl">Google Docs URL</label>
+    <input
+      id="sourceUrl"
+      type="url"
+      formControlName="sourceUrl"
+      placeholder="https://docs.google.com/document/d/..."
+    />
+    <div class="actions">
+      <button type="submit" [disabled]="(loading$ | async) === true">
+        Analyze
+      </button>
+      <div class="spinner" *ngIf="(loading$ | async) === true"></div>
+    </div>
+  </form>
+
+  <p class="error" *ngIf="(error$ | async) as error">
+    {{ error }}
+  </p>
+
+  <app-article-results
+    [result]="result$ | async"
+    [uploadMessage]="uploadMessage$ | async"
+    [uploading]="uploading$ | async"
+    (uploadRequested)="upload()"
+  ></app-article-results>
+</section>

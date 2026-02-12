@@ -1,0 +1,74 @@
+﻿@model PublishGuard.Presentation.Models.ArticleInputViewModel
+@{
+    ViewData["Title"] = "PublishGuard Analyzer";
+}
+
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-8">
+            <h1 class="mb-3">PublishGuard Article QA</h1>
+            <p class="text-muted">Paste a Google Doc URL, analyze content quality, and prepare a WordPress upload payload.</p>
+
+            @if (TempData["UploadMessage"] is string message)
+            {
+                <div class="alert alert-success">@message</div>
+            }
+
+            <form asp-action="Analyze" method="post" class="card shadow-sm">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">Google Doc URL</label>
+                        <input asp-for="SourceUrl" class="form-control" />
+                        <span asp-validation-for="SourceUrl" class="text-danger"></span>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Min Images</label>
+                            <input asp-for="MinImages" class="form-control" type="number" min="0" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Max Images</label>
+                            <input asp-for="MaxImages" class="form-control" type="number" min="0" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Min Product Links</label>
+                            <input asp-for="MinProductLinks" class="form-control" type="number" min="0" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Max Product Links</label>
+                            <input asp-for="MaxProductLinks" class="form-control" type="number" min="0" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Max Bold %</label>
+                            <input asp-for="MaxBoldPercentage" class="form-control" type="number" min="0" max="100" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Min H2 Headings</label>
+                            <input asp-for="MinH2Headings" class="form-control" type="number" min="0" />
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button class="btn btn-primary" type="submit">Analyze Article</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 bg-light h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Workflow</h5>
+                    <ol class="small text-muted">
+                        <li>Fetch Google Doc export HTML</li>
+                        <li>Parse title, meta, images, links</li>
+                        <li>Run quality checks</li>
+                        <li>Generate WordPress payload</li>
+                        <li>Export HTML to output/article.html</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

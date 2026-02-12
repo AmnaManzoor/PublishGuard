@@ -1,0 +1,19 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.cache
+*.sln.docstates
+
+# Build outputs
+bin/
+obj/
+publish/
+
+# Node / Angular
+node_modules/
+dist/
+.env
+
+# Logs
+*.log

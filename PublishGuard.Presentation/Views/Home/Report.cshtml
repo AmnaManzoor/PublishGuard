@@ -1,0 +1,129 @@
+@model PublishGuard.Presentation.Models.ArticleReportViewModel
+@{
+    ViewData["Title"] = "Article Report";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h1 class="mb-1">Article Quality Report</h1>
+            <p class="text-muted mb-0">Source: @Model.Report.Article.SourceUrl</p>
+        </div>
+        <a class="btn btn-outline-secondary" asp-action="Index">New Analysis</a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5>WordPress Payload</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Meta Title</label>
+                        <input class="form-control" value="@Model.Report.Article.MetaTitle" readonly />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Meta Description</label>
+                        <textarea class="form-control" rows="2" readonly>@Model.Report.Article.MetaDescription</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Article Title</label>
+                        <input class="form-control" value="@Model.Report.Article.Title" readonly />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Article HTML</label>
+                        <textarea class="form-control" rows="6" readonly>@Model.Report.Article.Html</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mt-4">
+                <div class="card-body">
+                    <h5>HTML Preview</h5>
+                    <div class="border rounded p-3 bg-white">
+                        @Html.Raw(Model.Report.Article.Html)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5>Quality Checks</h5>
+                    <p class="text-muted">Status: @(Model.Report.IsReadyToPublish ? "Ready to publish" : "Needs fixes")</p>
+                    @if (Model.Report.Issues.Count == 0)
+                    {
+                        <div class="alert alert-success">No issues found.</div>
+                    }
+                    else
+                    {
+                        <ul class="list-group">
+                            @foreach (var issue in Model.Report.Issues)
+                            {
+                                var badge = issue.Severity switch
+                                {
+                                    PublishGuard.Domain.QualityIssueSeverity.Error => "bg-danger",
+                                    PublishGuard.Domain.QualityIssueSeverity.Warning => "bg-warning text-dark",
+                                    _ => "bg-info text-dark"
+                                };
+                                <li class="list-group-item d-flex justify-content-between align-items-start issue-item">
+                                <div class="text-wrap">
+                                    <div class="fw-semibold">@issue.Code</div>
+                                    <small class="text-muted long-text">@issue.Message</small>
+                                </div>
+                                    <span class="badge @badge">@issue.Severity</span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5>Images (@Model.Images.Count())</h5>
+                    <ul class="list-group">
+                        @foreach (var image in Model.Images)
+                        {
+                            <li class="list-group-item">
+                                <div class="fw-semibold">@image.Src</div>
+                                <small class="text-muted">Alt: @image.AltText</small><br />
+                                <small class="text-muted">Drive: @(image.IsGoogleDriveHosted ? "Yes" : "No") · Public: @(image.IsPubliclyAccessible ? "Likely" : "No")</small>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5>Links (@Model.Links.Count())</h5>
+                    <ul class="list-group">
+                        @foreach (var link in Model.Links)
+                        {
+                            <li class="list-group-item">
+                                <div class="fw-semibold">@link.Text</div>
+                                <small class="text-muted">@link.Href</small><br />
+                                <small class="text-muted">Product link: @(link.IsProductLink ? "Yes" : "No")</small>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
+            <form asp-action="Upload" method="post">
+                <input type="hidden" name="SourceUrl" value="@Model.Input.SourceUrl" />
+                <input type="hidden" name="MinImages" value="@Model.Input.MinImages" />
+                <input type="hidden" name="MaxImages" value="@Model.Input.MaxImages" />
+                <input type="hidden" name="MinProductLinks" value="@Model.Input.MinProductLinks" />
+                <input type="hidden" name="MaxProductLinks" value="@Model.Input.MaxProductLinks" />
+                <input type="hidden" name="MaxBoldPercentage" value="@Model.Input.MaxBoldPercentage" />
+                <input type="hidden" name="MinH2Headings" value="@Model.Input.MinH2Headings" />
+
+                <button class="btn btn-success w-100" type="submit" @(Model.Report.IsReadyToPublish ? "" : "disabled")>
+                    Upload to WordPress (placeholder)
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,84 @@
+<section class="results" *ngIf="result as data">
+  <div class="card summary">
+    <div>
+      <h2>{{ data.article.title || 'Untitled Article' }}</h2>
+      <p class="url">{{ data.article.sourceUrl }}</p>
+    </div>
+    <div class="score">
+      <span [class]="scoreClass">{{ data.score }} · {{ data.status }}</span>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Summary</h3>
+      <ul>
+        <li>Word Count: {{ data.article.wordCount }}</li>
+        <li>Images: {{ imageCount }}</li>
+        <li>Product Links: {{ productLinkCount }}</li>
+        <li>H2 Headings: {{ data.article.h2Count }}</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Validation Issues</h3>
+      <div class="issues" *ngIf="data.issues.length > 0; else noIssues">
+        <div>
+          <h4>Image Issues</h4>
+          <p *ngIf="issueGroups.imageIssues.length === 0">None</p>
+          <ul>
+            <li *ngFor="let issue of issueGroups.imageIssues">
+              {{ issue.message }}
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h4>Link Issues</h4>
+          <p *ngIf="issueGroups.linkIssues.length === 0">None</p>
+          <ul>
+            <li *ngFor="let issue of issueGroups.linkIssues">
+              {{ issue.message }}
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h4>Formatting Issues</h4>
+          <p *ngIf="issueGroups.formattingIssues.length === 0">None</p>
+          <ul>
+            <li *ngFor="let issue of issueGroups.formattingIssues">
+              {{ issue.message }}
+            </li>
+          </ul>
+        </div>
+        <div *ngIf="issueGroups.otherIssues.length > 0">
+          <h4>Other Issues</h4>
+          <ul>
+            <li *ngFor="let issue of issueGroups.otherIssues">
+              {{ issue.message }}
+            </li>
+          </ul>
+        </div>
+      </div>
+      <ng-template #noIssues>
+        <p>Great news — no validation issues found.</p>
+      </ng-template>
+    </div>
+  </div>
+
+  <div class="card upload">
+    <button
+      type="button"
+      (click)="requestUpload()"
+      [disabled]="!canUpload || uploading"
+    >
+      Upload to WordPress
+    </button>
+    <span *ngIf="!canUpload" class="hint">Upload is available only when status is Ready.</span>
+    <span *ngIf="uploading" class="hint">Uploading...</span>
+    <span *ngIf="uploadMessage" class="success">{{ uploadMessage }}</span>
+  </div>
+</section>
+
+<section class="results empty" *ngIf="!result">
+  <p>Paste a Google Docs URL and run an analysis to see results here.</p>
+</section>
