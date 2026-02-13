@@ -186,11 +186,11 @@ Domain logic is tested independently of the API layer.
 
 ---
 
-## Walkthrough Video
 
-A short walkthrough demonstrating the full flow (Analyze → Validate → Upload simulation):
+## 🎥 Code Walkthrough Video
 
-[▶️ View Walkthrough Video](docs/walkthrough.mp4)
+[![Watch Code Walkthrough Video](https://img.youtube.com/vi/qMhoybnCpXw/0.jpg)](https://youtu.be/qMhoybnCpXw)
+
 
 ---
 
